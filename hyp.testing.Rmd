@@ -1,0 +1,189 @@
+---
+title: "Hypothesis Testing"
+author: "Eric Pettengill"
+output: ioslides_presentation
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+```
+
+## Hypothesis Testing
+
+1. State hypotheses
+2. Calculate test statistic
+3. p-value
+4. Decision
+5. Conclusion
+
+## Hypothesis Testing for $p$
+
+- A pharmaceutical company wants to show that fewer than 20% of patients who use a particular medication experience side effects
+
+- In a clinical trial with 400 patients, they find 68 experienced side effects
+
+## Hypothesis Testing for $p$
+- Hypotheses
+
+$$H_0: p \ge 0.20$$
+$$H_1: p < 0.20$$
+
+From our sample, out of 400 patients, 68 experienced side effects.
+
+$$\hat{p} = \frac{68}{400} = 0.17$$
+
+## Hypothesis Testing for $p$
+- Distribution of $\hat{p}$ ASSUMING $H_0$ is true
+$$\hat{p} \sim N\Big(0.20, \sqrt{\frac{0.2(1-0.2)}{400}}\Big)$$
+
+```{r echo=FALSE, fig.height=3.5, fig.width=6}
+set.seed(12)
+psamps <- rnorm(400, mean = 0.2, sd = sqrt((0.2*0.8)/400))
+
+ggplot() + 
+  aes(psamps) + 
+  geom_histogram(bins = 30) +
+  geom_vline(xintercept = 0.17, color = "red") +
+  annotate("text", x = 0.16, y = 30, label = "0.17", color = "red")
+```
+
+## Hypothesis Testing for $p$
+- Test statistic
+
+$$Z^* = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0(1-p_0)}{n}}} = \frac{0.17 - 0.20}{\sqrt{\frac{0.2(1-0.2)}{400}}} = -1.5$$
+
+```{r echo=FALSE, fig.height=3.5, fig.width=6}
+set.seed(12)
+psamps <- rnorm(400, mean = 0.2, sd = sqrt((0.2*0.8)/400))
+
+z <- (psamps-0.2)/sqrt((0.2*0.8)/400)
+
+ggplot() + 
+  aes(z) + 
+  geom_histogram(bins = 30) +
+  geom_vline(xintercept = -1.5, color = "red") +
+  annotate("text", x = -2, y = 30, label = "test stat", color = "red")
+```
+
+## Hypothesis Testing for $p$
+
+- p-value
+
+$$H_0: p \ge 0.20$$
+$$H_1: p < 0.20$$
+
+$$P(Z < -1.5) = normalcdf(-e99,-1.5,~0,~1) = 0.0668$$
+
+```{r echo=FALSE, fig.height=3.5, fig.width=6}
+set.seed(12)
+psamps <- rnorm(400, mean = 0.2, sd = sqrt((0.2*0.8)/400))
+
+z <- (psamps-0.2)/sqrt((0.2*0.8)/400)
+
+ggplot() + 
+  aes(z) + 
+  geom_histogram(bins = 30) +
+  geom_vline(xintercept = -1.5, color = "red") +
+  annotate("rect", xmin = -3, xmax = -1.5, ymin = 0, ymax = 35, color = "red", fill = "red", alpha = 0.2)
+```
+
+## Hypothesis Testing for $p$
+
+- Decision: 
+
+**DO NOT** reject $H_0$ since
+
+$$p-value>\alpha$$
+$$0.0688>0.05$$
+
+- Conclusion
+
+There is not signi􏰁cant evidence to show that fewer than 20% of patients who use a particular medication experience side effects
+
+## Hypothesis Testing for $\mu$
+
+In 2008, the online travel agency Travelocity reported that summer travelers booked their airline reservations an average of 73.3 days in advance. A random sample of 40 summer travelers in 2010 was selected. The average number of days travelers booked their airline reservations in advance was 78 with a standard deviation of 6.85 days. Using α = 0.1, test the hypothesis that the average number of days reservations are booked in advance has changed since 2008.
+
+## Hypothesis Testing for $\mu$
+
+- Hypotheses
+
+$$H_0: \mu = 73.3$$
+$$H_1: \mu \ne 73.3$$
+
+From our sample of 40 summer travelers, we get a mean of 78 and s.d. of 6.85.
+
+## Hypothesis Testing for $\mu$
+
+- Distribution of $\bar{X}$ ASSUMING $H_0$ is true
+
+$$\bar{X} \sim N\Big(73.3, \frac{6.85}{\sqrt{40}}\Big)$$
+
+```{r echo=FALSE, fig.height=3.5, fig.width=6}
+set.seed(12)
+musamps <- rnorm(400, mean = 73.3, sd = 6.85/sqrt(40))
+
+tstar <- (musamps - 73.3)/(6.85/sqrt(40))
+
+ggplot() + 
+  aes(musamps) + 
+  geom_histogram(bins = 30) +
+  geom_vline(xintercept = 78, color = "red") +
+  annotate("text", x = 77.5, y = 30, label = "78", color = "red")
+```
+
+## Hypothesis Testing for $\mu$
+
+- Test Statistic
+
+$$t^* = \frac{\bar{X} - \mu_0}{s/\sqrt{n}} = \frac{78 - 73.3}{6.85/\sqrt{40}} = 4.339$$
+
+```{r echo=FALSE, fig.height=3.5, fig.width=6}
+set.seed(12)
+musamps <- rnorm(400, mean = 73.3, sd = 6.85/sqrt(40))
+
+tstar <- (musamps - 73.3)/(6.85/sqrt(40))
+
+ggplot() + 
+  aes(tstar) + 
+  geom_histogram(bins = 30) +
+  geom_vline(xintercept = 4.339, color = "red") +
+  annotate("text", x = 3.8, y=30, label = "test stat", color = "red")
+```
+
+## Hypothesis Testing for $\mu$
+
+- p-value
+
+$$H_0: \mu = 73.3$$
+$$H_1: \mu \ne 73.3$$
+
+$$2 \cdot P(t>4.339) = 2 \cdot tcdf(4.339,~e99,~40-1) = 0.000098$$
+
+```{r echo=FALSE, fig.height=2.5, fig.width=6}
+set.seed(12)
+musamps <- rnorm(400, mean = 73.3, sd = 6.85/sqrt(40))
+
+tstar <- (musamps - 73.3)/(6.85/sqrt(40))
+
+ggplot() + 
+  aes(tstar) + 
+  geom_histogram(bins = 30) +
+  geom_vline(xintercept = c(-4.339, 4.339), color = "red") +
+  annotate("rect", xmin = -5, xmax = -4.339, ymin = 0, ymax = 65, color = "red", fill = "red", alpha = 0.2) +
+  annotate("rect", xmin = 4.339, xmax = 5, ymin = 0, ymax = 65, color = "red", fill = "red", alpha = 0.2)
+```
+
+
+## Hypothesis Testing for $\mu$
+
+- Decision:
+
+**Reject** $H_0$ since 
+
+$$p-value < \alpha$$
+$$0.000098 < 0.1$$
+
+- Conclusion
+
+There is signi􏰁cant evidence to show that the average number of days reservations are booked in advance has changed since 2008.
